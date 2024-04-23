@@ -5,10 +5,13 @@ import AuthContext from './store/auth-context'
 import {useContext} from 'react'
 import Welcome from "./pages/Welcome";
 import UpdateProfile from "./pages/UpdateProfile";
+import Layout from "./components/Layout/Layout";
 
 function App() {
   const authCtx = useContext(AuthContext)
   return (
+    <div >
+    <Layout>
     <Switch>
       <Route path='/' exact>
         <Signup/>
@@ -24,6 +27,8 @@ function App() {
         <UpdateProfile/>
       </Route>
     </Switch>
+    </Layout>
+    </div>
   );
 }
 
