@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import AuthContext from './store/auth-context'
 import {useContext} from 'react'
 import Welcome from "./pages/Welcome";
+import UpdateProfile from "./pages/UpdateProfile";
 
 function App() {
   const authCtx = useContext(AuthContext)
@@ -18,6 +19,9 @@ function App() {
       <Route path='/welcome'>
         {authCtx.isLoggedIn && <Welcome/>}
         {!authCtx.isLoggedIn && <Redirect to='/'/>}
+      </Route>
+      <Route path='/profile'>
+        <UpdateProfile/>
       </Route>
     </Switch>
   );
