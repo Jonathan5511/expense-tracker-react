@@ -1,22 +1,19 @@
-import { useRef,useContext } from 'react';
-import classes from './Signup.module.css'
+import classes from './Login.module.css'
 import { NavLink,useHistory } from 'react-router-dom';
+import {useContext, useRef } from 'react';
 import AuthContext from '../store/auth-context';
 
-const Signup=(props)=>{
-    const history=useHistory();
+const Login =()=>{
+    const history = useHistory();
     const authCtx=useContext(AuthContext)
     const emailInputRef=useRef();
     const passwordInputRef=useRef();
-    const cPasswordInputRef=useRef();
 
     const onSubmitHandler=(event)=>{
         event.preventDefault();
         const enteredEmail=emailInputRef.current.value
         const enteredPassword=passwordInputRef.current.value
-        const cEnteredPassword=cPasswordInputRef.current.value
-        if(enteredPassword===cEnteredPassword){
-            fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA3Xrnzk0TTuA1haVoAVWYDaK2TtED9yTk',{
+            fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA3Xrnzk0TTuA1haVoAVWYDaK2TtED9yTk',{
             method:'POST',
             body:JSON.stringify({
                 email:enteredEmail,
@@ -42,28 +39,23 @@ const Signup=(props)=>{
         }).catch((err)=>{
             alert(err.message)
         })
-        }else{
-            alert(`Passwords don't match,please enter the correct matching password!`)
-        }
         
     }
 
-    return (
-    <div className={classes.control}>
-        <form onSubmit={onSubmitHandler}>
-            <label htmlFor="email">Email:</label>
-            <input id="email" type="email" ref={emailInputRef}></input>
-            <label htmlFor="pass">Enter Password:</label>
-            <input id="pass" type="password" ref={passwordInputRef}></input>
-            <label htmlFor="cpass">Confirm Password:</label>
-            <input id="cpass" type="password" ref={cPasswordInputRef}></input>
-            <button type='submit'>SignUp</button>
-        </form>
-        <div style={{marginTop:'1rem'}}>
-            <p>Have an account?<NavLink to='/login'>Login</NavLink></p>
+    return(
+        <div className={classes.control}>
+            <form onSubmit={onSubmitHandler}>
+                <label htmlFor="email">Email:</label>
+                <input id="email" type="email" ref={emailInputRef}></input>
+                <label htmlFor="pass">Enter Password:</label>
+                <input id="pass" type="password" ref={passwordInputRef}></input>
+                <button type='submit'>Login</button>
+            </form>
+            <div style={{marginTop:'1rem'}}>
+                <p>Don't have an account?<NavLink to='/'>Signup</NavLink></p>
+            </div>
         </div>
-    </div>
     )
 }
 
-export default Signup;
+export default Login;
