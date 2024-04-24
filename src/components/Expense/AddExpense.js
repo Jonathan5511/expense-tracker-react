@@ -1,12 +1,12 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useRef, useState} from 'react';
 import classes from './AddExpense.module.css'
 import ExpensesList from "./ExpensesList";
 
 const AddExpense =()=>{
+    const [submit,setSubmit] = useState('')
     const amountInputRef = useRef()
     const desInputRef = useRef()
     const catInputRef = useRef()
-    const [expenseList,setExpenseList] = useState([])
 
     const onSubmitHandler=(event)=>{
         event.preventDefault();
@@ -17,8 +17,31 @@ const AddExpense =()=>{
             alert('Enter all details!!')
             return
         }
-        setExpenseList((prevList)=>{
-            return [...prevList,{amount:enteredAmount,description:enteredDescription,category:enteredCategory,id:Math.random().toString()}]
+        fetch('https://react-prep-c813f-default-rtdb.firebaseio.com/expense.json',{
+            method:'POST',
+            body:JSON.stringify({
+                amount:enteredAmount,
+                description:enteredDescription,
+                category:enteredCategory
+            }),
+            headers:{'Content-Type':'application/json'}
+        }).then(res=>{
+            if(res.ok){
+                return res.json()
+            }else{
+                return res.json().then(data=>{
+                    let errorMessage='Data not stored!!'
+                    if(data && data.error && data.error.message){
+                        errorMessage=data.error.message
+                    }
+                    throw new Error (errorMessage)
+                })
+            }
+        }).then(data=>{
+            setSubmit(data.name)
+          
+        }).catch(err=>{
+            alert(err.message)
         })
         amountInputRef.current.value=''
         desInputRef.current.value=''
@@ -43,7 +66,7 @@ const AddExpense =()=>{
                 </form>
             </div>
             <div>
-                <ExpensesList expenseList={expenseList}/>
+                <ExpensesList submitChange={submit}/>
             </div>
         </Fragment>
         
