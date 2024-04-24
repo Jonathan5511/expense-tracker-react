@@ -1,10 +1,12 @@
-import { Button } from "react-bootstrap";
+import { Button} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import AuthContext from "../store/auth-context";
 import { useContext } from "react";
+import classes from './Welcome.module.css'
 
 const Welcome=(props)=>{
     const authCtx=useContext(AuthContext)
+
     const onVerifyHandler=()=>{
         fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyA3Xrnzk0TTuA1haVoAVWYDaK2TtED9yTk',{
             method:'POST',
@@ -31,12 +33,15 @@ const Welcome=(props)=>{
         })
     }
     return(
-        <div>
+        <div className={classes.control}>
             <h1>Welcome to expense tracker!</h1>
             <div>
-                <p>Your profile is incomplete<NavLink to='/profile'>Complete Now</NavLink></p>
+                <p>Update Profile <NavLink to='/profile'>Complete Now</NavLink></p>
             </div>
-            <Button variant="primary" onClick={onVerifyHandler}>Verify Email</Button>
+            <div><Button variant="light" onClick={onVerifyHandler}>Verify Email</Button></div>
+            <br/>
+            <div><Button size="lg" variant="success" href="/expense" >Create Expense</Button></div>
+            
         </div>
     )
 }

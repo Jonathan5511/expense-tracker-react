@@ -1,6 +1,7 @@
 import { useRef,useContext, useEffect } from 'react';
 import classes from './UpdateProfile.module.css'
 import AuthContext from '../store/auth-context';
+import { NavLink } from 'react-router-dom';
 
 const UpdateProfile=(props)=>{
     const authCtx = useContext(AuthContext)
@@ -27,8 +28,13 @@ const UpdateProfile=(props)=>{
                 })
             }
         }).then(data=>{
-            nameInputRef.current.value=data.users[0].displayName
-            imageInputRef.current.value=data.users[0].photoUrl
+            if(data.users[0].displayName===undefined && data.users[0].photoUrl===undefined){
+                nameInputRef.current.value=''
+                imageInputRef.current.value=''
+            }else{
+                nameInputRef.current.value=data.users[0].displayName
+                imageInputRef.current.value=data.users[0].photoUrl
+            }
         }).catch(err=>{
             alert(err.message)
         })
@@ -74,6 +80,7 @@ const UpdateProfile=(props)=>{
                 <input id="img" type="url" ref={imageInputRef}></input>
                 <button type='submit'>Update</button>
             </form>
+            <div style={{marginTop:'1rem'}}><NavLink to='/welcome'>Back</NavLink></div>         
         </div>
   
     )
