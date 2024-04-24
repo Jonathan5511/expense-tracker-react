@@ -4,9 +4,14 @@ import ExpensesList from "./ExpensesList";
 
 const AddExpense =()=>{
     const [submit,setSubmit] = useState('')
+    const [editConfirm,setEditConfirm] = useState(false)
+    const [editId,setEditId]=useState('')
     const amountInputRef = useRef()
     const desInputRef = useRef()
     const catInputRef = useRef()
+    const editAmountInputRef = useRef()
+    const editDesInputRef = useRef()
+    const editCatInputRef = useRef()
 
     const onSubmitHandler=(event)=>{
         event.preventDefault();
@@ -48,9 +53,74 @@ const AddExpense =()=>{
         catInputRef.current.value=''
     }
 
+    const onEditHandler=(id)=>{
+        setEditId(id)
+        setEditConfirm(true)
+        fetch(`https://react-prep-c813f-default-rtdb.firebaseio.com/expense/${id}.json`
+        ).then(res=>{
+            if(res.ok){
+                return res.json()
+            }else{
+                return res.json().then(data=>{
+                    let errorMessage = 'Data retreival failed'
+                    if(data && data.error && data.error.message){
+                        errorMessage=data.error.message
+                    }
+                    throw new Error (errorMessage)
+                })
+            }
+        }).then(data=>{
+            editAmountInputRef.current.value=data.amount
+            editDesInputRef.current.value=data.description
+            editCatInputRef.current.value=data.category
+        }).catch(err=>{
+            alert(err.message)
+        })
+
+    }
+
+    const onConfirmEditHandler=event=>{
+        setEditConfirm(false)
+        event.preventDefault()
+        const editEnteredAmount = editAmountInputRef.current.value
+        const editEnteredDescription = editDesInputRef.current.value
+        const editEnteredCategory = editCatInputRef.current.value
+        if(editEnteredAmount.trim().length===0 || editEnteredDescription.trim().length===0 || editEnteredCategory.trim().length===0){
+            alert('Enter all details!!')
+            return
+        }
+        fetch(`https://react-prep-c813f-default-rtdb.firebaseio.com/expense/${editId}.json`,{
+            method:'PUT',
+            body:JSON.stringify({
+                amount:editEnteredAmount,
+                description:editEnteredDescription,
+                category:editEnteredCategory
+            }),
+            headers:{'Content-Type':'application.json'}
+        }).then(res=>{
+            if(res.ok){
+                return res.json()
+            }else{
+                return res.json().then(data=>{
+                    let errorMessage = 'Data edit failed!'
+                    if(data && data.error && data.error.message){
+                        errorMessage=data.error.message
+                    }
+                    throw new Error (errorMessage)
+                })
+            }
+        }).then(data=>{
+            setSubmit(data.amount)
+        }).catch(err=>{
+            alert(err.message)
+        })
+
+
+    }
+
     return(
         <Fragment>
-            <div className={classes.control}>
+            {!editConfirm && <div className={classes.control}>
                 <form onSubmit={onSubmitHandler}>
                     <label htmlFor="amount">Expense Amount:</label>
                     <input id="amount" type="number" ref={amountInputRef}></input>
@@ -64,9 +134,24 @@ const AddExpense =()=>{
                     </select>
                     <button type='submit' >Submit</button>  
                 </form>
-            </div>
+            </div>}
+            {editConfirm && <div className={classes.control}>
+                <form onSubmit={onConfirmEditHandler}>
+                    <label htmlFor="amount">Expense Amount:</label>
+                    <input id="amount" type="number" ref={editAmountInputRef}></input>
+                    <label htmlFor="des">Description:</label>
+                    <input id="des" type="text" ref={editDesInputRef}></input>
+                    <label htmlFor="cat">Category:</label>
+                    <select id="cat" ref={editCatInputRef}>
+                    <option value='food'>Food</option>
+                    <option value='petrol'>Petrol</option>
+                    <option value='clothes'>Clothes</option>
+                    </select>
+                    <button type='submit' >Confirm Edit</button>  
+                </form>
+            </div>}
             <div>
-                <ExpensesList submitChange={submit}/>
+                <ExpensesList submitChange={submit} editExpense={onEditHandler}/>
             </div>
         </Fragment>
         

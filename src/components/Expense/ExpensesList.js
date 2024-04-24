@@ -1,9 +1,19 @@
-import { Fragment, useEffect, useState } from "react";
-import { Col, Row, Table } from "react-bootstrap";
+import { Fragment, useEffect, useState,useCallback } from "react";
+import { Button, Col, Row, Table } from "react-bootstrap";
 import classes from './ExpensesList.module.css'
 
 const ExpensesList=(props)=>{
     const [expenseList,setExpenseList] = useState([])
+    const [deleteChange,setDeleteChange] = useState(false)
+
+    const onDeleteHandler=useCallback(async(id)=>{
+        setDeleteChange(true)
+        await fetch(`https://react-prep-c813f-default-rtdb.firebaseio.com/expense/${id}.json`,{
+            method:'DELETE',
+            headers:{'Content-Type':'application/json'}
+        })
+        setDeleteChange(false)
+    },[])
 
     useEffect(()=>{
         fetch('https://react-prep-c813f-default-rtdb.firebaseio.com/expense.json'
@@ -33,7 +43,7 @@ const ExpensesList=(props)=>{
         }).catch(err=>{
             alert(err.message)
         })
-    },[props.submitChange])
+    },[props.submitChange,deleteChange])
 
     return (
         <Fragment>
@@ -55,6 +65,8 @@ const ExpensesList=(props)=>{
                                             <td>{expense.amount}</td>
                                             <td>{expense.description}</td>
                                             <td>{expense.category}</td>
+                                            <td><Button variant="dark" onClick={()=>onDeleteHandler(expense.id)}>Delete</Button></td>
+                                            <td><Button variant="dark" onClick={()=>props.editExpense(expense.id)}>Edit</Button></td>
                                         </tr>)
                                     })}
                                     
