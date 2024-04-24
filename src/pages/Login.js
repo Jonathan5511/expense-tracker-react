@@ -51,7 +51,9 @@ const Login =()=>{
                 <input id="pass" type="password" ref={passwordInputRef}></input>
                 <button type='submit'>Login</button>
             </form>
+    
             <div style={{marginTop:'1rem'}}>
+                <p><NavLink to='/forgot'>Forgot Password?</NavLink></p>
                 <p>Don't have an account?<NavLink to='/'>Signup</NavLink></p>
             </div>
         </div>

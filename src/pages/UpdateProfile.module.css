@@ -3,11 +3,11 @@
     width: 50%;
     max-width: 30rem;
     text-align: center;
-    background-color: #ffffff;;
+    background-color: #3d3d3d;
     padding: 2rem;
     border-radius: 12px;
     align-items: center;
-    color: black;
+    color: rgb(255, 255, 255);
     margin-top: 5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26)
   }
@@ -38,7 +38,7 @@
   .control button {
     font: inherit;
     cursor: pointer;
-    background: rgb(90, 91, 184);
+    background: rgb(255, 255, 255);
     border: 1px solid #230052;
     color:black;
     padding: 0.75rem 2rem;

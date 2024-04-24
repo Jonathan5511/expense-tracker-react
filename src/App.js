@@ -6,6 +6,7 @@ import {useContext} from 'react'
 import Welcome from "./pages/Welcome";
 import UpdateProfile from "./pages/UpdateProfile";
 import Layout from "./components/Layout/Layout";
+import ForgotPass from "./pages/ForgotPass";
 
 function App() {
   const authCtx = useContext(AuthContext)
@@ -24,7 +25,11 @@ function App() {
         {!authCtx.isLoggedIn && <Redirect to='/'/>}
       </Route>
       <Route path='/profile'>
-        <UpdateProfile/>
+        {authCtx.isLoggedIn && <UpdateProfile/>}
+        {!authCtx.isLoggedIn && <Redirect to='/'/>}
+      </Route>
+      <Route path='/forgot'>
+        <ForgotPass/>
       </Route>
     </Switch>
     </Layout>

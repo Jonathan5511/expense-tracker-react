@@ -1,6 +1,6 @@
-import { Button,Navbar } from "react-bootstrap";
+import { Button,Container,Navbar } from "react-bootstrap";
 import AuthContext from "../../store/auth-context";
-import { useContext } from "react";
+import { Fragment, useContext } from "react";
 
 const MainNavigation=()=>{
     const authCtx=useContext(AuthContext);
@@ -9,9 +9,13 @@ const MainNavigation=()=>{
     }
 
     return (
-        <Navbar className="d-flex justify-content-end align-items-center bg-dark" > 
-            <Button variant="light" onClick={onLogoutHandler}>Logout</Button>
-        </Navbar>
+        <Fragment>
+     
+            <Navbar className="d-flex justify-content-end align-items-center bg-dark" > 
+                {authCtx.isLoggedIn && <Button variant="light" onClick={onLogoutHandler}>Logout</Button>}
+            </Navbar>
+
+        </Fragment> 
     )
 
 }
