@@ -10,6 +10,7 @@ const MainNavigation=()=>{
     // const authCtx=useContext(AuthContext);
     const onLogoutHandler=()=>{
         dispatch(authActions.logout(null))
+        document.body.style='background:white'
     }
 
     return (
