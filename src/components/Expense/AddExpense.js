@@ -1,11 +1,16 @@
 import { Fragment, useRef, useState} from 'react';
 import classes from './AddExpense.module.css'
 import ExpensesList from "./ExpensesList";
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { expenseActions } from '../../store/ExpenseData';
+import { Button } from 'react-bootstrap';
 
 
 const AddExpense =()=>{
+    const dispatch = useDispatch();
+    const expense= useSelector(state => state.expense.expense)
     const premium = useSelector(state=>state.expense.showPremium)
+    const download = useSelector(state=>state.expense.showDownload)
     const [submit,setSubmit] = useState('')
     const [editConfirm,setEditConfirm] = useState(false)
     const [editId,setEditId]=useState('')
@@ -120,9 +125,42 @@ const AddExpense =()=>{
 
     }
 
+    const onDownloadButtonHandler=()=>{
+        dispatch(expenseActions.toggleDownload())
+        document.body.style='background:#1f1f1f'
+    }
+
+    const onCloseDownloadButtonHandler=()=>{
+        dispatch(expenseActions.toggleDownload())
+        dispatch(expenseActions.togglePremium())
+        document.body.style='background:white'
+    }
+
+    const ondownloadHandler=()=>{
+        const headers = Object.keys(expense[0]).toString()
+        const main = expense.map(item=>{
+            return Object.values(item).toString()
+        })
+        const csv = [headers, ...main].join('.\n')
+        startCsvDownload(csv)
+    }
+
+    const startCsvDownload=(input)=>{
+        const blob = new Blob([input], {type: 'application/json'})
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.download='test-csv.csv'
+        a.href=url
+        a.style.display='none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        URL.revokeObjectURL(url)
+    }
+
     return(
         <Fragment>
-            {!editConfirm && <div className={classes.control}>
+            {!download && !editConfirm && <div className={classes.control}>
                 <form onSubmit={onSubmitHandler}>
                     <label htmlFor="amount">Expense Amount:</label>
                     <input id="amount" type="number" ref={amountInputRef}></input>
@@ -134,11 +172,10 @@ const AddExpense =()=>{
                     <option value='petrol'>Petrol</option>
                     <option value='clothes'>Clothes</option>
                     </select>
-                    <button type='submit' >Submit</button>
-                    {premium && <button type='button'>Activate Premium</button>}  
+                    <button type='submit' >Submit</button> 
                 </form>
             </div>}
-            {editConfirm && <div className={classes.control}>
+            {!download && editConfirm && <div className={classes.control}>
                 <form onSubmit={onConfirmEditHandler}>
                     <label htmlFor="amount">Expense Amount:</label>
                     <input id="amount" type="number" ref={editAmountInputRef}></input>
@@ -150,13 +187,19 @@ const AddExpense =()=>{
                     <option value='petrol'>Petrol</option>
                     <option value='clothes'>Clothes</option>
                     </select>
-                    <button type='submit' >Confirm Edit</button> 
-                    {premium && <button type='button'>Activate Premium</button>} 
+                    <button type='submit' >Confirm Edit</button>  
                 </form>
             </div>}
+            {!download && premium && <div className={classes.control}>
+                <Button type='button' variant='dark'  onClick={onDownloadButtonHandler}>Activate Premium</Button>
+            </div>}
             <div>
-                <ExpensesList submitChange={submit} editExpense={onEditHandler}/>
+                {!download && <ExpensesList submitChange={submit} editExpense={onEditHandler}/>}
             </div>
+            {download && <div className={classes.control}>
+                <button type='button' onClick={ondownloadHandler}>Download CSV</button>
+                <button type='button' onClick={onCloseDownloadButtonHandler}>Back</button>
+            </div>}
         </Fragment>
         
         

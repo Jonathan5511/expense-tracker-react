@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialExpenseState={
     expense:[],
-    showPremium:false
+    showPremium:false,
+    showDownload:false
 }
 
 const expenseSlice = createSlice({
@@ -14,6 +15,9 @@ const expenseSlice = createSlice({
         },
         expenseData(state,action){
             state.expense=action.payload
+        },
+        toggleDownload(state){
+            state.showDownload=!state.showDownload
         }
     }
 })
