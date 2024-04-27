@@ -1,8 +1,12 @@
 import { Fragment, useEffect, useState,useCallback } from "react";
 import { Button, Col, Row, Table } from "react-bootstrap";
 import classes from './ExpensesList.module.css'
+import { useDispatch} from "react-redux";
+import { expenseActions } from "../../store/ExpenseData";
 
 const ExpensesList=(props)=>{
+
+    const dispatch = useDispatch();
     const [expenseList,setExpenseList] = useState([])
     const [deleteChange,setDeleteChange] = useState(false)
 
@@ -40,10 +44,18 @@ const ExpensesList=(props)=>{
                 })
             }
             setExpenseList(uploadedData)
+            dispatch(expenseActions.expenseData(uploadedData))
+            let totalAmount=0
+            for(const items of uploadedData){
+                totalAmount = totalAmount+(+items.amount)
+            }
+            if(totalAmount>10000){
+                dispatch(expenseActions.togglePremium())
+            }
         }).catch(err=>{
             alert(err.message)
         })
-    },[props.submitChange,deleteChange])
+    },[props.submitChange,deleteChange,dispatch])
 
     return (
         <Fragment>

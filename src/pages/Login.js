@@ -1,11 +1,14 @@
 import classes from './Login.module.css'
 import { NavLink,useHistory } from 'react-router-dom';
-import {useContext, useRef } from 'react';
-import AuthContext from '../store/auth-context';
+import {/*useContext*/ useRef } from 'react';
+// import AuthContext from '../store/auth-context';
+import { useDispatch } from 'react-redux';
+import { authActions } from '../store/auth';
 
 const Login =()=>{
+    const dispatch = useDispatch();
     const history = useHistory();
-    const authCtx=useContext(AuthContext)
+    // const authCtx=useContext(AuthContext)
     const emailInputRef=useRef();
     const passwordInputRef=useRef();
 
@@ -34,7 +37,8 @@ const Login =()=>{
                 })
             }
         }).then((data)=>{
-            authCtx.login(data.idToken)
+            // authCtx.login(data.idToken)
+            dispatch(authActions.login(data.idToken))
             history.replace('/welcome')
         }).catch((err)=>{
             alert(err.message)

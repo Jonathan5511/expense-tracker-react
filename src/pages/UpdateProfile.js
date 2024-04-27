@@ -1,10 +1,12 @@
-import { useRef,useContext, useEffect } from 'react';
+import { useRef,/*useContext*/ useEffect } from 'react';
 import classes from './UpdateProfile.module.css'
-import AuthContext from '../store/auth-context';
+// import AuthContext from '../store/auth-context';
 import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const UpdateProfile=(props)=>{
-    const authCtx = useContext(AuthContext)
+    const token = useSelector(state=> state.auth.token)
+    // const authCtx = useContext(AuthContext)
     const nameInputRef=useRef()
     const imageInputRef=useRef()
 
@@ -12,7 +14,7 @@ const UpdateProfile=(props)=>{
         fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyA3Xrnzk0TTuA1haVoAVWYDaK2TtED9yTk',{
             method:'POST',
             body:JSON.stringify({
-                idToken:authCtx.token
+                idToken:token
             }),
             headers:{'Content-Type':'application/json'}
         }).then(res=>{
@@ -38,7 +40,7 @@ const UpdateProfile=(props)=>{
         }).catch(err=>{
             alert(err.message)
         })
-    },[authCtx.token])
+    },[token])
 
     const onSubmitHandler=(event)=>{
         event.preventDefault();
@@ -47,7 +49,7 @@ const UpdateProfile=(props)=>{
         fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyA3Xrnzk0TTuA1haVoAVWYDaK2TtED9yTk',{
             method:'POST',
             body:JSON.stringify({
-                idToken:authCtx.token,
+                idToken:token,
                 displayName:enteredName,
                 photoUrl:enteredImage,
                 returnSecureToken:true

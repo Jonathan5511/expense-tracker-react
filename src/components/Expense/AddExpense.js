@@ -1,8 +1,11 @@
 import { Fragment, useRef, useState} from 'react';
 import classes from './AddExpense.module.css'
 import ExpensesList from "./ExpensesList";
+import { useSelector } from 'react-redux';
+
 
 const AddExpense =()=>{
+    const premium = useSelector(state=>state.expense.showPremium)
     const [submit,setSubmit] = useState('')
     const [editConfirm,setEditConfirm] = useState(false)
     const [editId,setEditId]=useState('')
@@ -44,7 +47,6 @@ const AddExpense =()=>{
             }
         }).then(data=>{
             setSubmit(data.name)
-          
         }).catch(err=>{
             alert(err.message)
         })
@@ -132,7 +134,8 @@ const AddExpense =()=>{
                     <option value='petrol'>Petrol</option>
                     <option value='clothes'>Clothes</option>
                     </select>
-                    <button type='submit' >Submit</button>  
+                    <button type='submit' >Submit</button>
+                    {premium && <button type='button'>Activate Premium</button>}  
                 </form>
             </div>}
             {editConfirm && <div className={classes.control}>
@@ -147,7 +150,8 @@ const AddExpense =()=>{
                     <option value='petrol'>Petrol</option>
                     <option value='clothes'>Clothes</option>
                     </select>
-                    <button type='submit' >Confirm Edit</button>  
+                    <button type='submit' >Confirm Edit</button> 
+                    {premium && <button type='button'>Activate Premium</button>} 
                 </form>
             </div>}
             <div>

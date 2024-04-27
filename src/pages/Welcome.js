@@ -1,18 +1,20 @@
 import { Button} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import AuthContext from "../store/auth-context";
-import { useContext } from "react";
+// import AuthContext from "../store/auth-context";
+// import { useContext } from "react";
 import classes from './Welcome.module.css'
+import { useSelector } from "react-redux";
 
 const Welcome=(props)=>{
-    const authCtx=useContext(AuthContext)
+    const token = useSelector(state=> state.auth.token)
+    // const authCtx=useContext(AuthContext)
 
     const onVerifyHandler=()=>{
         fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyA3Xrnzk0TTuA1haVoAVWYDaK2TtED9yTk',{
             method:'POST',
             body:JSON.stringify({
                 requestType:'VERIFY_EMAIL',
-                idToken:authCtx.token
+                idToken:token
             })
         }).then(res=>{
             if(res.ok){

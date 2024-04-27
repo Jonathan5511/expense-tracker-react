@@ -1,11 +1,14 @@
-import { useRef,useContext } from 'react';
+import { useRef,/*useContext*/ } from 'react';
 import classes from './Signup.module.css'
 import { NavLink,useHistory } from 'react-router-dom';
-import AuthContext from '../store/auth-context';
+// import AuthContext from '../store/auth-context';
+import { useDispatch } from 'react-redux';
+import { authActions } from '../store/auth';
 
 const Signup=(props)=>{
+    const dispatch = useDispatch()
     const history=useHistory();
-    const authCtx=useContext(AuthContext)
+    // const authCtx=useContext(AuthContext)
     const emailInputRef=useRef();
     const passwordInputRef=useRef();
     const cPasswordInputRef=useRef();
@@ -37,7 +40,8 @@ const Signup=(props)=>{
                 })
             }
         }).then((data)=>{
-            authCtx.login(data.idToken)
+            // authCtx.login(data.idToken)
+            dispatch(authActions.login(data.idToken))
             history.replace('/welcome')
         }).catch((err)=>{
             alert(err.message)
